@@ -12,13 +12,9 @@ require "refract/snapshot"
 require "refract/version"
 
 # TODO:
-#  - Display the percentage:
-#    - compare with rmagick, store the percentage in the filename
-#    - show the percentage in the UI
 #  - A UI for overlaying diff on each image
-#  - Run snapshots by clicking a button
-#    - Make it run in the rails process
-#    - Make the log come back to the browser
+#  - Make the log come back to the browser
+#  - Make it look not-terrible
 Capybara.register_driver :selenium_chrome do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)
 end

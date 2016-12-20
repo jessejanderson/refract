@@ -1,15 +1,20 @@
 <h1>Refract</h1>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <span>
+      Current: <code><%= @current_commit.title %></code> (<%= @current_commit.timeago %>)
+      <form action="/snapshot" method="POST" style="display: inline;">
+        <button class="pure-button pure-button-primary">
+          take snapshot
+        </button>
+      </form>
+    </span>
+    <p>Master: <code><%= @master_commit.title %></code> (<%= @master_commit.timeago %>)</p>
+  </div>
+</div>
 
-<p>
-  Current: <code><%= @current_sha %></code>
-  <form action="/snapshot" method="POST">
-    <input type="submit" value="take snapshot" />
-  </form>
-</p>
 
-<p>Master: <code><%= @master_sha %></code></p>
-
-<table>
+<table class="pure-table pure-table-striped">
   <thead>
     <tr>
       <th>commit</th>
@@ -18,45 +23,46 @@
     </tr>
   <thead>
   <tbody>
-    <% sorted_commits = @commits.sort_by(&:timestamp) %>
+    <% sorted_commits = @commits.sort_by { |c| -c.timestamp } %>
     <% sorted_commits.each do |commit| %>
       <tr>
         <td>
           <%= commit.sha == @current_sha ? "🎉" : "" %>
-          <code><%= commit.title %></code>
+          <p><code><%= commit.title %></code></p>
+          <p><%= commit.timeago %></p>
         </td>
         <td>
-          <ul>
+          <ul class="pure-menu-list">
             <% commit.diffs.each do |diff| %>
-              <li>
+              <li lass="pure-menu-item">
                 <a href="/diff/<%= diff.base.sha %>/<%= diff.head.sha %>">
-                  ..<%= diff.head.title %>
+                  <%= diff.head.title %> (<%= diff.percentage %>%)
                 </a>
-                <form action="/delete/<%= diff.base.sha %>/<%= diff.head.sha %>" method="post">
-                  <input type="submit" value="x">
+                <form action="/delete/<%= diff.base.sha %>/<%= diff.head.sha %>" method="post" style="display: inline;">
+                  <button type="submit" class="pure-button">&times;</button>
                 </form>
               </li>
             <% end %>
             <li>
-              <form action="/diff" method="post">
-                <p> New Diff: </p>
+              <form action="/diff" method="post" class="pure-form">
                 <input type="hidden" name="base_sha" value="<%= commit.sha %>" />
-                <% exclude_shas = [commit.sha].concat(commit.diffs.map(&:head).map(&:sha)) %>
                 <select name="head_sha">
                   <% sorted_commits.each do |target_commit| %>
-                  <option value="<%= target_commit.sha %>" <% if exclude_shas.include?(target_commit.sha) %>disabled<% end %>>
-                    <%= target_commit.title %>
-                  </option>
+                    <% if target_commit.sha != commit.sha %>
+                      <option value="<%= target_commit.sha %>">
+                        <%= target_commit.title %>
+                      </option>
+                    <% end %>
                   <% end %>
                 </select>
-                <input type="submit" value="Create" />
+                <button type="submit" class="pure-button">create</button>
               </form>
             </li>
           </ul>
         </td>
         <td>
           <form action="/delete/<%= commit.sha %>" method="post">
-            <input type="submit" value="x">
+            <button type="submit" class="pure-button">&times; delete snapshot</button>
           </form>
         </td>
       </tr>

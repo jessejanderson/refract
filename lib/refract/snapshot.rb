@@ -1,9 +1,19 @@
 module Refract
   class Snapshot
-    attr_reader :path, :name
+    attr_reader :path, :name, :whole_name, :percentage
     def initialize(path)
       @path = path
-      @name = File.basename(path)
+      @whole_name = File.basename(path)
+      matches = whole_name.match(/__([\d\.]+)__(.*)/)
+
+      if matches.length == 3
+        @percentage = matches[1].to_f
+        @name = matches[2]
+      else
+        @percentage = 0
+        @name = whole_name
+      end
+
       @sha = Pathname.new(path).each_filename.to_a[-2]
     end
 

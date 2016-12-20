@@ -6,16 +6,20 @@ module Refract
       @directory = ".refract/#{sha}"
     end
 
+    def self.from_rev(rev)
+      self.new(`git rev-parse #{rev}`.strip)
+    end
+
     def title
-      @title ||= `git show --format="%h %s (%an)" -s #{@sha}`
+      @title ||= `git show --format="%s (%an) %h" -s #{@sha}`
     end
 
     def timestamp
       @timestamp ||= `git show  --format="%at" -s #{@sha}`.to_i
     end
 
-    def images
-      @images ||= Snapshot.all(directory: @directory)
+    def timeago
+      @timeago ||= `git show --format="%cr" -s #{@sha}`
     end
 
     def diffs

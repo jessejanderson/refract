@@ -1,16 +1,5 @@
 module Refract
   module Server
-    module Templates
-      def self.build_template(template_name)
-        full_name = File.expand_path(File.join(__FILE__, "../templates/#{template_name}"))
-        erb_text = File.read(full_name)
-        ERB.new(erb_text)
-      end
-
-      HOME = build_template("home.erb")
-      DIFF = build_template("diff.erb")
-    end
-
     def self.serve(port: 7777)
       root = File.expand_path("./.refract")
       server = WEBrick::HTTPServer.new(Port: port)
@@ -71,11 +60,11 @@ module Refract
       end
 
       def home(request, response)
-        @master_sha = `git rev-parse master`.strip
-        @current_sha = `git rev-parse head`.strip
+        @master_commit = Refract::Commit.from_rev("master")
+        @current_commit = Refract::Commit.from_rev("head")
         @commits = Refract::Commit.all
         response.status = 200
-        response.body = Templates::HOME.result(binding)
+        response.body = build_template("home.erb")
       end
 
       def not_found(request, response)
@@ -91,7 +80,16 @@ module Refract
       def diff(request, response, base_sha, head_sha)
         @diff = Refract::Diff.new(base_sha, head_sha)
         response.status = 200
-        response.body = Templates::DIFF.result(binding)
+        response.body = build_template("diff.erb")
+      end
+
+      def build_template(template_name)
+        template = File.read(File.expand_path(File.join(__FILE__, "../templates/#{template_name}")))
+        content = nil
+        locals = binding
+        ERB.new(template, nil, nil, "content").result(locals)
+        layout = File.read(File.expand_path(File.join(__FILE__, "../templates/layout.erb")))
+        ERB.new(layout).result(locals)
       end
     end
   end

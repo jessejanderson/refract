@@ -2,7 +2,7 @@
   <%= @diff.base.title %>..<%= @diff.head.title %>
 </h1>
 
-<p><%= @diff.images.size %> images</p>
+<p><%= @diff.snapshots.size %> images, <%= @diff.percentage %>% different</p>
 
 <a href="/">Back</a>
 <table>
@@ -16,19 +16,20 @@
   </thead>
   <tbody>
     <% image_height = 250 %>
-    <% @diff.images.each do |image| %>
+    <% @diff.snapshots.each do |snapshot| %>
       <tr>
         <td>
-          <%= image.name %>
+          <%= snapshot.name %> (<%= snapshot.percentage %>%)
+
         </td>
         <td>
-          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= image.name %>" />
+          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= snapshot.name %>" />
         </td>
         <td>
-          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.head.sha %>/<%= image.name %>" />
+          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.head.sha %>/<%= snapshot.name %>" />
         </td>
         <td>
-          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= image.name %>" />
+          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= snapshot.whole_name %>" />
         </td>
       </tr>
     <% end %>
