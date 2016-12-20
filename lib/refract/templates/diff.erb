@@ -1,37 +1,76 @@
-<h1>
-  <%= @diff.base.title %>..<%= @diff.head.title %>
-</h1>
+<h2>
+  <code><%= @diff.base.title %></code> .. <code><%= @diff.head.title %></code>
+</h2>
 
-<p><%= @diff.snapshots.size %> images, <%= @diff.percentage %>% different</p>
+<p>
+  <a href="/">&larr; Back</a>
+</p>
 
-<a href="/">Back</a>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Base</th>
-      <th>Head</th>
-      <th>Diff</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% image_height = 250 %>
-    <% @diff.snapshots.each do |snapshot| %>
-      <tr>
-        <td>
-          <%= snapshot.name %> (<%= snapshot.percentage %>%)
+<p>
+  <%= @diff.snapshots.size %> images, <%= @diff.percentage %>% different.
+</p>
+<p>
+  Show image: <select id="select-diff-image" onChange="updateDiffImages()">
+    <option selected>Diff</option>
+    <option>Base</option>
+    <option>Head</option>
+  </select>
 
-        </td>
-        <td>
-          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= snapshot.name %>" />
-        </td>
-        <td>
-          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.head.sha %>/<%= snapshot.name %>" />
-        </td>
-        <td>
-          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= snapshot.whole_name %>" />
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+
+  Show screens: <select id="select-card-perc" onChange="updateDiffImages()">
+    <option selected value="diff-img-card-diff">> 0% different</option>
+    <option value="diff-img-card">All</option>
+  </select>
+</p>
+<div class="diff-img-card-container">
+  <% @diff.snapshots.each do |snapshot| %>
+    <div class="diff-img-card <%= snapshot.percentage > 0 ? "diff-img-card-diff" : "" %>">
+      <p style="text-align: center;">
+        <%= snapshot.name %> (<%= snapshot.percentage %>%)
+      </p>
+      <div onClick="toggleAllImages(this)">
+        <img class="diff-img diff-img-base" src="/img/<%= @diff.base.sha %>/<%= snapshot.name %>" />
+        <img class="diff-img diff-img-head" src="/img/<%= @diff.head.sha %>/<%= snapshot.name %>" />
+        <img class="diff-img diff-img-diff" src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= snapshot.whole_name %>" />
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  var diffImg = ".diff-img";
+
+  function updateDiffImages() {
+    var selectedImgOption = document.querySelector("#select-diff-image option:checked");
+    var selectedCardsOption = document.querySelector("#select-card-perc option:checked");
+
+    var allDiffImages = document.querySelectorAll(diffImg);
+    setDisplay(allDiffImages, "none")
+    var selectedDiffImages = document.querySelectorAll(".diff-img.diff-img-" + selectedImgOption.text.toLowerCase());
+    setDisplay(selectedDiffImages, null)
+
+    var allCards = document.querySelectorAll(".diff-img-card")
+    setDisplay(allCards, "none")
+    var selectedCards = document.querySelectorAll("." + selectedCardsOption.value);
+    setDisplay(selectedCards, null)
+  }
+
+  function setDisplay(elements, displayValue) {
+    var i = 0;
+    for (i = 0; i < elements.length; i++) {
+      elements[i].style.display = displayValue;
+    }
+  }
+
+  function toggleAllImages(el) {
+    var allImages = el.querySelectorAll(diffImg);
+    if (el.dataset.showingAll == "true") {
+      el.dataset.showingAll = "false"
+      updateDiffImages()
+    } else {
+      el.dataset.showingAll = "true"
+      setDisplay(allImages, null)
+    }
+  }
+  updateDiffImages();
+</script>

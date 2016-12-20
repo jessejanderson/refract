@@ -11,7 +11,7 @@ module Refract
     end
 
     def title
-      @title ||= `git show --format="%s (%an) %h" -s #{@sha}`
+      @title ||= `git show --format="%s (%an) %h" -s #{@sha}`.strip
     end
 
     def timestamp

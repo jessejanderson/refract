@@ -1,4 +1,4 @@
-<h1>Refract</h1>
+<h1>Snapshots</h1>
 <div class="pure-g">
   <div class="pure-u-1">
     <span>
@@ -22,14 +22,18 @@
       <th></th>
     </tr>
   <thead>
-  <tbody>
+  <tbody style="background-color: white;">
     <% sorted_commits = @commits.sort_by { |c| -c.timestamp } %>
     <% sorted_commits.each do |commit| %>
       <tr>
         <td>
-          <%= commit.sha == @current_sha ? "🎉" : "" %>
+
           <p><code><%= commit.title %></code></p>
-          <p><%= commit.timeago %></p>
+          <p>
+            <%= commit.timeago %>
+            <%= commit.sha == @current_commit.sha ? " (current)" : "" %>
+            <%= commit.sha == @master_commit.sha ? " (master)" : "" %>
+          </p>
         </td>
         <td>
           <ul class="pure-menu-list">

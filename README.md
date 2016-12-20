@@ -8,6 +8,8 @@ gem 'refract'
 
 ## Usage
 
+- define a run in `snapshots.rb`
+
 ```
 $ refract serve
 ```

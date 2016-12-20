@@ -51,7 +51,7 @@ module Refract
           Diff.create(base_sha, head_sha)
           redirect(response, "/diff/#{base_sha}/#{head_sha}")
         when "snapshot"
-          load("snapshots.rb")
+          load(DEFAULT_SNAPSHOTS_FILE)
           Refract.perform
           redirect(response, "/")
         else

@@ -7,6 +7,7 @@ module Refract
       @dimensions = []
       @before = ->(n) { "no-op" }
       @script = ->(n) { raise("Script must be defined") }
+      @driver = nil
       yield(self)
     end
 
@@ -18,13 +19,17 @@ module Refract
       @script = block
     end
 
+    def driver(driver_name)
+      @driver = driver_name
+    end
+
     def dimension(x, y)
       @dimensions << [x, y]
     end
 
     def perform
       Refract.log("=> Refract @ #{@sha}")
-      capybara_session = Capybara::Session.new(:selenium_chrome)
+      capybara_session = Capybara::Session.new(@driver)
       session_proxy = SessionProxy.new(self, capybara_session)
       @before.call(session_proxy)
       @script.call(session_proxy)
