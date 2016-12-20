@@ -1,0 +1,65 @@
+<h1>Refract</h1>
+
+<p>
+  Current: <code><%= @current_sha %></code>
+  <form action="/snapshot" method="POST">
+    <input type="submit" value="take snapshot" />
+  </form>
+</p>
+
+<p>Master: <code><%= @master_sha %></code></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>commit</th>
+      <th>diffs</th>
+      <th></th>
+    </tr>
+  <thead>
+  <tbody>
+    <% sorted_commits = @commits.sort_by(&:timestamp) %>
+    <% sorted_commits.each do |commit| %>
+      <tr>
+        <td>
+          <%= commit.sha == @current_sha ? "🎉" : "" %>
+          <code><%= commit.title %></code>
+        </td>
+        <td>
+          <ul>
+            <% commit.diffs.each do |diff| %>
+              <li>
+                <a href="/diff/<%= diff.base.sha %>/<%= diff.head.sha %>">
+                  ..<%= diff.head.title %>
+                </a>
+                <form action="/delete/<%= diff.base.sha %>/<%= diff.head.sha %>" method="post">
+                  <input type="submit" value="x">
+                </form>
+              </li>
+            <% end %>
+            <li>
+              <form action="/diff" method="post">
+                <p> New Diff: </p>
+                <input type="hidden" name="base_sha" value="<%= commit.sha %>" />
+                <% exclude_shas = [commit.sha].concat(commit.diffs.map(&:head).map(&:sha)) %>
+                <select name="head_sha">
+                  <% sorted_commits.each do |target_commit| %>
+                  <option value="<%= target_commit.sha %>" <% if exclude_shas.include?(target_commit.sha) %>disabled<% end %>>
+                    <%= target_commit.title %>
+                  </option>
+                  <% end %>
+                </select>
+                <input type="submit" value="Create" />
+              </form>
+            </li>
+          </ul>
+        </td>
+        <td>
+          <form action="/delete/<%= commit.sha %>" method="post">
+            <input type="submit" value="x">
+          </form>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

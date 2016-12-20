@@ -1,0 +1,36 @@
+<h1>
+  <%= @diff.base.title %>..<%= @diff.head.title %>
+</h1>
+
+<p><%= @diff.images.size %> images</p>
+
+<a href="/">Back</a>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Base</th>
+      <th>Head</th>
+      <th>Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% image_height = 250 %>
+    <% @diff.images.each do |image| %>
+      <tr>
+        <td>
+          <%= image.name %>
+        </td>
+        <td>
+          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= image.name %>" />
+        </td>
+        <td>
+          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.head.sha %>/<%= image.name %>" />
+        </td>
+        <td>
+          <img style="max-height:<%= image_height %>px;" src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= image.name %>" />
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

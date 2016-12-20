@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby -I~/code/refract/lib
+
+require "refract"
+Refract::CLI.dispatch(ARGV)
