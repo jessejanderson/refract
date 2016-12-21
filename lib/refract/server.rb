@@ -10,8 +10,6 @@ module Refract
 
       host = "http://localhost:#{port}"
       Refract.log("Starting on #{host} (#{root})")
-      # Mac only
-      system("open", host)
 
       server.start
     end

@@ -1,3 +1,4 @@
+require "set"
 module Refract
   class Diff
     def self.create(base_sha, head_sha)
@@ -51,6 +52,10 @@ module Refract
 
     def snapshots
       @snapshots ||= Snapshot.all(directory: @directory)
+    end
+
+    def dimensions
+      @dimensions ||= Set.new(snapshots.map(&:dimensions))
     end
 
     def percentage

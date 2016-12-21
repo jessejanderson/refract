@@ -10,27 +10,42 @@
   <%= @diff.snapshots.size %> images, <%= @diff.percentage %>% different.
 </p>
 <p>
-  Show image: <select id="select-diff-image" onChange="updateDiffImages()">
-    <option selected>Diff</option>
-    <option>Base</option>
-    <option>Head</option>
+  Show image:
+  <select id="select-diff-image" onChange="updateDiffImages()">
+    <option selected value="diff">Diff</option>
+    <option value="base">Base</option>
+    <option value="head">Head</option>
   </select>
 
 
-  Show screens: <select id="select-card-perc" onChange="updateDiffImages()">
+  Show screens:
+  <select id="select-card-perc" onChange="updateDiffImages()">
     <option selected value="diff-img-card-diff">> 0% different</option>
     <option value="diff-img-card">All</option>
   </select>
+
+  Show dimensions:
+  <select id="select-card-dimensions" onChange="updateDiffImages()">
+    <option selected value="diff-img-card">All</option>
+    <% @diff.dimensions.each do |dim| %>
+      <option value="diff-img-card-<%= dim.join("x") %>"><%= dim.join("x") %></option>
+    <% end %>
+  </select>
+
 </p>
 <div class="diff-img-card-container">
   <% @diff.snapshots.each do |snapshot| %>
-    <div class="diff-img-card <%= snapshot.percentage > 0 ? "diff-img-card-diff" : "" %>">
+    <div class="
+      diff-img-card
+      <%= snapshot.percentage > 0 ? "diff-img-card-diff" : "" %>
+      diff-img-card-<%= snapshot.dimensions.join("x") %>
+      ">
       <p style="text-align: center;">
         <%= snapshot.name %> (<%= snapshot.percentage %>%)
       </p>
       <div onClick="toggleAllImages(this)">
-        <img class="diff-img diff-img-base" src="/img/<%= @diff.base.sha %>/<%= snapshot.name %>" />
-        <img class="diff-img diff-img-head" src="/img/<%= @diff.head.sha %>/<%= snapshot.name %>" />
+        <img class="diff-img diff-img-base" src="/img/<%= @diff.base.sha %>/<%= snapshot.base_name %>" />
+        <img class="diff-img diff-img-head" src="/img/<%= @diff.head.sha %>/<%= snapshot.base_name %>" />
         <img class="diff-img diff-img-diff" src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= snapshot.whole_name %>" />
       </div>
     </div>
@@ -40,18 +55,29 @@
 <script>
   var diffImg = ".diff-img";
 
-  function updateDiffImages() {
-    var selectedImgOption = document.querySelector("#select-diff-image option:checked");
-    var selectedCardsOption = document.querySelector("#select-card-perc option:checked");
+  function updateDiffImages(prevSelections) {
+    var selections
+    if (prevSelections) {
+      selections = prevSelections
+    } else {
+      selections = getSelections()
+    }
+
+    try {
+      localStorage.setItem("selections", JSON.stringify(selections))
+    } catch (err) {
+      console.error(err)
+      // too bad
+    }
 
     var allDiffImages = document.querySelectorAll(diffImg);
     setDisplay(allDiffImages, "none")
-    var selectedDiffImages = document.querySelectorAll(".diff-img.diff-img-" + selectedImgOption.text.toLowerCase());
+    var selectedDiffImages = document.querySelectorAll(".diff-img.diff-img-" + selections.img);
     setDisplay(selectedDiffImages, null)
 
     var allCards = document.querySelectorAll(".diff-img-card")
     setDisplay(allCards, "none")
-    var selectedCards = document.querySelectorAll("." + selectedCardsOption.value);
+    var selectedCards = document.querySelectorAll("." + selections.perc + "." + selections.dim);
     setDisplay(selectedCards, null)
   }
 
@@ -69,8 +95,39 @@
       updateDiffImages()
     } else {
       el.dataset.showingAll = "true"
-      setDisplay(allImages, null)
+      setDisplay(allImages, "inline")
     }
   }
-  updateDiffImages();
+
+  function getSelections() {
+    var selectedImgOption = document.querySelector("#select-diff-image option:checked");
+    var selectedPercOption = document.querySelector("#select-card-perc option:checked");
+    var selectedDimOption = document.querySelector("#select-card-dimensions option:checked");
+
+    return {
+      img: selectedImgOption.value,
+      perc: selectedPercOption.value,
+      dim: selectedDimOption.value,
+    }
+  }
+
+  function updateForm(selections) {
+    var options = [
+      document.querySelector("#select-diff-image option[value=" + selections.img + "]"),
+      document.querySelector("#select-card-perc option[value=" + selections.perc + "]"),
+      document.querySelector("#select-card-dimensions option[value=" + selections.dim + "]"),
+    ]
+    options.forEach(function(opt) {
+      opt && (opt.selected = true)
+    })
+  }
+
+  var initialSelections = null
+  try {
+    initialSelections = JSON.parse(localStorage.getItem("selections"))
+    updateForm(initialSelections)
+  } catch (err) {
+    console.error(err)
+  }
+  updateDiffImages(initialSelections);
 </script>

@@ -14,6 +14,7 @@ require "refract/version"
 # TODO:
 #  - Make the log come back to the browser
 #  - better dimension handling
+#  - parallelism
 module Refract
   DEFAULT_PORT = 7777
   DEFAULT_SNAPSHOTS_FILE = "snapshots.rb"
