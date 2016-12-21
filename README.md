@@ -25,6 +25,11 @@ $ refract serve
 - Running the tests
  - HA HA HA. There are no tests. None.
 
+## TODO
+
+- Run script elements in parallel
+- Make the log come back to the browser
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
