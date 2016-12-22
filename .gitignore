@@ -7,3 +7,4 @@
 /pkg/
 /spec/reports/
 /tmp/
+/lib/refract/multi_process_logger/
