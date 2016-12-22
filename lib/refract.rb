@@ -6,6 +6,7 @@ require "pathname"
 require "refract/cli"
 require "refract/commit"
 require "refract/diff"
+require "refract/multi_process_logger"
 require "refract/run"
 require "refract/server"
 require "refract/snapshot"
@@ -19,25 +20,19 @@ module Refract
     attr_accessor :logger
   end
 
-  module PutsLogger
-    def self.log(message); puts(message); end
-  end
-
-  self.logger = PutsLogger
-
-  RUNS = []
+  self.logger = MultiProcessLogger.new
 
   def self.run(&block)
-    RUNS << Run.new(&block)
+    @run = Run.new(&block)
   end
 
   def self.perform
-    RUNS.each(&:perform)
-    RUNS.clear
+    @run.perform
+    @run
   end
 
   def self.log(message)
-    logger.log(message)
+    logger.log("[#{Process.pid}][#{message}]")
   end
 
   def self.serve(port: DEFAULT_PORT)

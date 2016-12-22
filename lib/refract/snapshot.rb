@@ -27,6 +27,14 @@ module Refract
       @dimensions ||= [@width, @height]
     end
 
+    def dimension_s
+      dimensions.join("x")
+    end
+
+    def timestamp
+      File.mtime(@path)
+    end
+
     def self.all(directory: )
       Dir.glob(directory + "/*.png").map { |f| Snapshot.new(f) }
     end

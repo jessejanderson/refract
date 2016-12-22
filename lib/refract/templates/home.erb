@@ -1,75 +1,86 @@
 <h1>Snapshots</h1>
 <div class="pure-g">
   <div class="pure-u-1">
-    <span>
-      Current: <code><%= @current_commit.title %></code> (<%= @current_commit.timeago %>)
+    <p>
+      <code><%= @current_commit.branch %></code>
+      compared to
+      <form action="/diff" method="post">
+        <input type="hidden" name="head_sha" value="<%= @current_commit.sha %>" />
+        <select name="base_sha" onchange="this.parentElement.submit()">
+          <option value="">Choose a base</option>
+          <% @all_commits.each do |commit| %>
+            <% if commit.sha != @current_commit.sha %>
+              <option
+                <%= (@base_commit && @base_commit.sha == commit.sha) ? "selected" : "" %>
+                value="<%= commit.sha %>"
+              >
+                <% if commit.branch.empty? %>
+                  <%= commit.message %>
+                <% else %>
+                  <%= commit.branch + " (#{commit.message})" %>
+                <% end %>
+              </option>
+            <% end %>
+          <% end %>
+        </select>
+      </form>
+    </p>
+    <p>
+      Last Commit: <code><%= @current_commit.message %></code> (<%= @current_commit.author %>)
+    </p>
+    <p>
+      Last Updated: <%= @diff.timeago %>
       <form action="/snapshot" method="POST" style="display: inline;">
         <button class="pure-button pure-button-primary">
-          take snapshot
+          update
         </button>
       </form>
-    </span>
-    <p>Master: <code><%= @master_commit.title %></code> (<%= @master_commit.timeago %>)</p>
+    </p>
   </div>
 </div>
 
-
-<table class="pure-table pure-table-striped">
-  <thead>
-    <tr>
-      <th>commit</th>
-      <th>diffs</th>
-      <th></th>
-    </tr>
-  <thead>
-  <tbody style="background-color: white;">
-    <% sorted_commits = @commits.sort_by { |c| -c.timestamp } %>
-    <% sorted_commits.each do |commit| %>
-      <tr>
-        <td>
-
-          <p><code><%= commit.title %></code></p>
-          <p>
-            <%= commit.timeago %>
-            <%= commit.sha == @current_commit.sha ? " (current)" : "" %>
-            <%= commit.sha == @master_commit.sha ? " (master)" : "" %>
-          </p>
-        </td>
-        <td>
-          <ul class="pure-menu-list">
-            <% commit.diffs.each do |diff| %>
-              <li lass="pure-menu-item">
-                <a href="/diff/<%= diff.base.sha %>/<%= diff.head.sha %>">
-                  <%= diff.head.title %> (<%= diff.percentage %>%)
-                </a>
-                <form action="/delete/<%= diff.base.sha %>/<%= diff.head.sha %>" method="post" style="display: inline;">
-                  <button type="submit" class="pure-button">&times;</button>
-                </form>
-              </li>
-            <% end %>
-            <li>
-              <form action="/diff" method="post" class="pure-form">
-                <input type="hidden" name="base_sha" value="<%= commit.sha %>" />
-                <select name="head_sha">
-                  <% sorted_commits.each do |target_commit| %>
-                    <% if target_commit.sha != commit.sha %>
-                      <option value="<%= target_commit.sha %>">
-                        <%= target_commit.title %>
-                      </option>
-                    <% end %>
-                  <% end %>
-                </select>
-                <button type="submit" class="pure-button">create</button>
-              </form>
-            </li>
-          </ul>
-        </td>
-        <td>
-          <form action="/delete/<%= commit.sha %>" method="post">
-            <button type="submit" class="pure-button">&times; delete snapshot</button>
-          </form>
-        </td>
-      </tr>
+<div style="display: flex; justify-content: space-between;">
+  <div>
+    <% @diff.dimensions.each do |dim| %>
+      <% dim_s = dim.join("x") %>
+      <a class="pure-button <%= @dimension == dim_s  ? "pure-button-active" : "" %>" href="/setting/dimension/<%= dim_s %>">
+        <%= dim_s %>
+      </a>
     <% end %>
-  </tbody>
-</table>
+  </div>
+  <% if @hidden_snapshots.any? %>
+    <a href="/hide">Show all (<%= @hidden_snapshots.length %> hidden)</a>
+  <% end %>
+  <div>
+    <a class="pure-button <%= @size == "small" ? "pure-button-active" : "" %>" href="/setting/size/small">small</a>
+    <a class="pure-button <%= @size == "big" ? "pure-button-active" : "" %>" href="/setting/size/big">big</a>
+  </div>
+</div>
+
+<% snapshots = @diff.snapshots %>
+<% snapshots.reject! { |s| @hidden_snapshots.include?(s.name) } %>
+<% snapshots.select! { |s| @dimension.nil? || @dimension == s.dimension_s } %>
+
+<div>
+  <% snapshots.each do |snapshot| %>
+    <div class="snapshot-<%= @size %>">
+      <p>
+        <%= snapshot.percentage %>%
+        <%= snapshot.name %>
+        <a href="/hide/<%= snapshot.name %>">hide diff</a>
+      </p>
+      <div style="display:flex;">
+        <img src="/img/<%= @diff.base.sha %>/<%= snapshot.base_name %>" />
+        <% if @righthand == "diff" %>
+          <a href="/setting/righthand/new">
+            <img src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= snapshot.whole_name %>" />
+          </a>
+        <% else %>
+          <a href="/setting/righthand/diff">
+            <img src="/img/<%= @diff.head.sha %>/<%= snapshot.base_name %>" />
+          </a>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

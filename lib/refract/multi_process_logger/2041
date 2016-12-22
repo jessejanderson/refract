@@ -1,0 +1,17 @@
+[2041][Starting on http://localhost:7777 (/Users/rmosolgo/code/resources/.refract)]
+[2041][1024x768--Event Page.png diff: compare: unable to open image `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/1024x768--Event Page.png': No such file or directory @ error/blob.c/OpenBlob/2702.
+compare: unable to open file `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/1024x768--Event Page.png' @ error/png.c/ReadPNGImage/3913.
+ / 2842624 => 0.0]
+[2041][Compare failed: No such file or directory @ sys_fail2 - (.refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/1024x768--Event Page.png, .refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/__0.0__1024x768--Event Page.png)]
+[2041][1024x768--New Event.png diff: compare: unable to open image `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/1024x768--New Event.png': No such file or directory @ error/blob.c/OpenBlob/2702.
+compare: unable to open file `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/1024x768--New Event.png' @ error/png.c/ReadPNGImage/3913.
+ / 2842624 => 0.0]
+[2041][Compare failed: No such file or directory @ sys_fail2 - (.refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/1024x768--New Event.png, .refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/__0.0__1024x768--New Event.png)]
+[2041][320x568--Event Page.png diff: compare: unable to open image `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/320x568--Event Page.png': No such file or directory @ error/blob.c/OpenBlob/2702.
+compare: unable to open file `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/320x568--Event Page.png' @ error/png.c/ReadPNGImage/3913.
+ / 790400 => 0.0]
+[2041][Compare failed: No such file or directory @ sys_fail2 - (.refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/320x568--Event Page.png, .refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/__0.0__320x568--Event Page.png)]
+[2041][320x568--New Event.png diff: compare: unable to open image `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/320x568--New Event.png': No such file or directory @ error/blob.c/OpenBlob/2702.
+compare: unable to open file `.refract/399710de6ae7cc548ace5ebc975f5da5900b6275/320x568--New Event.png' @ error/png.c/ReadPNGImage/3913.
+ / 790400 => 0.0]
+[2041][Compare failed: No such file or directory @ sys_fail2 - (.refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/320x568--New Event.png, .refract/233f7d966c5e34e687870f6183872806b26fdc79/399710de6ae7cc548ace5ebc975f5da5900b6275/__0.0__320x568--New Event.png)]

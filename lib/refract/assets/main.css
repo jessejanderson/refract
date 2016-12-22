@@ -1,0 +1,13 @@
+body {
+  max-width: 1400px;
+  margin: 0px auto;
+  background: #eeeeee;
+}
+
+.snapshot-big img {
+  max-height: 400px;
+}
+
+.snapshot-small img {
+  max-height: 200px;
+}

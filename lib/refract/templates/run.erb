@@ -1,0 +1,43 @@
+<h1>Now Running...</h1>
+<a href="/">Back</a>
+<script>
+  function reloadBody() {
+    var xhr = new XMLHttpRequest
+    xhr.open("GET", window.location.href)
+    xhr.addEventListener("load", function() {
+      var dummyHTML = document.createElement("html")
+      dummyHTML.innerHTML = xhr.responseText
+      document.getElementById("logoutput").innerHTML = dummyHTML.querySelector("#logoutput").innerHTML
+      hideClosed()
+    });
+
+    xhr.send()
+  }
+
+  setInterval(reloadBody, 500)
+
+  var hiddenPids = []
+  function hidePid(pid) {
+    hiddenPids.push(pid)
+    hideClosed()
+  }
+
+  function hideClosed() {
+    hiddenPids.forEach(function(pid) {
+      document.querySelector("#pid-" + pid).style.display = "none"
+    })
+  }
+</script>
+<div id="logoutput" style="display:flex; flex-wrap: wrap;">
+  <% Refract::MultiProcessLogger.all.each do |pid, messages| %>
+    <div id="pid-<%= pid %>" style="flex-basis:400px;flex-shrink: 0;flex-grow:0;">
+      <p><%= pid %></p>
+      <button onclick="hidePid(<%= pid %>)">x</button>
+      <ul>
+        <% messages.each do |m| %>
+          <li><code><%= m %></code></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>

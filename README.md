@@ -27,8 +27,11 @@ $ refract serve
 
 ## TODO
 
-- Run script elements in parallel
 - Make the log come back to the browser
+- Handle diffing from different scripts (eg different dimensions)
+- More fine-grained percentage (more decimals)
+- Full height screenshot
+- figure out when refract was run
 
 ## License
 

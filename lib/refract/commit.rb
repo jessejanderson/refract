@@ -1,6 +1,6 @@
 module Refract
   class Commit
-    attr_reader :sha
+    attr_reader :sha, :directory
     def initialize(sha)
       @sha = sha
       @directory = ".refract/#{sha}"
@@ -10,16 +10,16 @@ module Refract
       self.new(`git rev-parse #{rev}`.strip)
     end
 
-    def title
-      @title ||= `git show --format="%s (%an) %h" -s #{@sha}`.strip
+    def message
+      load_metadata && @message
     end
 
-    def timestamp
-      @timestamp ||= `git show  --format="%at" -s #{@sha}`.to_i
+    def author
+      load_metadata && @author
     end
 
     def timeago
-      @timeago ||= `git show --format="%cr" -s #{@sha}`
+      load_metadata && @timeago
     end
 
     def diffs
@@ -29,12 +29,26 @@ module Refract
       end
     end
 
+    def branch
+      @branch ||= `git branch --points-at #{@sha}`.strip.sub(/^\*\s+/, '')
+    end
+
     def destroy
       FileUtils.rm_rf(@directory)
     end
 
     def self.all
       Dir.glob(".refract/*").map { |d| Commit.new(File.basename(d)) }
+    end
+
+    private
+
+    def load_metadata
+      @load_metadata ||= begin
+        metadata = `git show --format="%s|%an|%cr" -s #{@sha}`.strip
+        @message, @author, @timeago = metadata.split("|")
+        true
+      end
     end
   end
 end
