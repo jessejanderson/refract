@@ -38,7 +38,9 @@ module Refract
     end
 
     def self.all
-      Dir.glob(".refract/*").map { |d| Commit.new(File.basename(d)) }
+      Dir.glob(".refract/*")
+        .select { |d| d != ".refract/.logs" }
+        .map { |d| Commit.new(File.basename(d)) }
     end
 
     private

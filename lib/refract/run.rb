@@ -40,21 +40,20 @@ module Refract
       MultiProcessLogger.clear
       Refract.log("=> Refract @ #{@sha}")
       FileUtils.rm_rf(directory)
-      # Refract.log("   => fork? #{Process.respond_to?(:fork)}")
       @pids = @scripts.map do |script|
-        # Process.fork {
+        Process.fork {
           Refract.logger = MultiProcessLogger.new
           s = Script.new(self) { |session|
             @before.call(session)
             script.call(session)
           }
           s.run
-        # }
+        }
       end
-      # Process.waitall
+      Process.waitall
     rescue Exception => err
       $stderr.puts "\n\n#{err}\n\n"
-      #   @pids.each { |pid| Process.kill("HUP", pid) }
+      @pids.each { |pid| Process.kill("HUP", pid) }
     end
 
     private

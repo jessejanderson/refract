@@ -12,26 +12,58 @@ gem 'refract'
 
 - define a run in `snapshots.rb`
 
-```
-$ refract serve
-```
+  ```ruby
+  # snapshots.rb
+  Refract.run do |run|
+    # Specify a Capybara Driver:
+    run.driver(:selenium)
+    # Snapshots will be taken with each dimension:
+    run.dimension(1024, 768)
+    run.dimension(320, 568)
+
+    # `session` is a Capybara::Session
+    run.before do |session|
+      # executed before each script
+    end
+
+    run.script do |session|
+      # Take a snapshot with this name:
+      session.snapshot("Landing Page")
+      # click things ...
+      session.snapshot("Event Page")
+    end
+
+    run.script do |session|
+      # ...
+    end
+  end
+  ```
+
+- manage runs in the browser:
+
+  ```
+  $ bundle exec refract serve
+  ```
+
+- or, run in the terminal:
+
+  ```
+  $ bundle exec refract run
+  ```
 
 ## Development
 
 - Trying out the server
   - Enter a project to test on: `$ cd ~/code/my_rails_app`
-  - Run the `refract` script from this codebase: `$ ~/code/refract/bin/refract serve`
+  - `gem "refract", path: "~/code/refract"`
+  - `bundle exec refract serve`
   - Visit `http://localhost:7777`
 - Running the tests
  - HA HA HA. There are no tests. None.
 
 ## TODO
 
-- Make the log come back to the browser
-- Handle diffing from different scripts (eg different dimensions)
-- More fine-grained percentage (more decimals)
 - Full height screenshot
-- figure out when refract was run
 
 ## License
 

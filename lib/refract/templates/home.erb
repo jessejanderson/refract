@@ -9,18 +9,20 @@
         <select name="base_sha" onchange="this.parentElement.submit()">
           <option value="">Choose a base</option>
           <% @all_commits.each do |commit| %>
-            <% if commit.sha != @current_commit.sha %>
-              <option
-                <%= (@base_commit && @base_commit.sha == commit.sha) ? "selected" : "" %>
-                value="<%= commit.sha %>"
-              >
-                <% if commit.branch.empty? %>
-                  <%= commit.message %>
-                <% else %>
-                  <%= commit.branch + " (#{commit.message})" %>
-                <% end %>
-              </option>
-            <% end %>
+            <option
+              <%= (@base_commit && @base_commit.sha == commit.sha) ? "selected" : "" %>
+              value="<%= commit.sha %>"
+            >
+              <% if commit.sha == @current_commit.sha %>
+                *
+              <% end %>
+              <% if commit.branch.empty? %>
+                <%= commit.sha[0,8] %>
+              <% else %>
+                <%= commit.branch %>
+              <% end %>
+              (<%= commit.message %>)
+            </option>
           <% end %>
         </select>
       </form>

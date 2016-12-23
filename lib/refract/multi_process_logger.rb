@@ -1,6 +1,6 @@
 module Refract
   class MultiProcessLogger
-    ROOT = File.expand_path(File.join(__FILE__, "../multi_process_logger/"))
+    ROOT = File.expand_path("./.refract/.logs/")
     def initialize
       FileUtils.mkdir_p(ROOT)
       @filename = File.expand_path(File.join(ROOT, "#{Process.pid}"))
