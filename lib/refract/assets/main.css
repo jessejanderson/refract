@@ -1,7 +1,8 @@
 body {
+  font-family: lato, sans-serif;
   max-width: 1400px;
   margin: 0px auto;
-  background: #eeeeee;
+  background: #d8d8d8;
 }
 
 .screenshot {
@@ -14,4 +15,81 @@ body {
 
 .screenshot-small img {
   max-height: 200px;
+}
+
+h1 {
+  background-color: #c4c4c4;
+  font-size: 24px;
+  font-weight: normal;
+  margin: 0;
+  padding: 16px 32px;
+}
+
+.subhead {
+  background: #e0e0e0;
+  padding: 32px;
+}
+
+.subhead h2 {
+  color: #828282;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0 0 24px;
+}
+
+.subhead h2 code, .subhead h2 select {
+  color: #333333;
+}
+
+.subhead h2 code {
+  background: #f2f2f2;
+  padding: 4px;
+}
+
+.subhead form {
+  display: inline;
+}
+
+.subhead h2 form select {
+  max-width: 240px;
+}
+
+.subhead .detail {
+  color: #828282;
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+.subhead .detail:last-child {
+  margin: 0;
+}
+
+.subhead .detail code, .subhead .detail .dark {
+  color: #333333;
+}
+
+.subhead .detail .button {
+  background: #828282;
+  color: #f2f2f2;
+  margin-left: 16px;
+  position: relative;
+  top: -1px;
+}
+
+.button {
+  background: #f2f2f2;
+  border: none;
+  border-radius: 3px;
+  color: #333333;
+  font-size: 12px;
+  padding: 6px 8px;
+  text-decoration: none;
+}
+.button.button-active {
+  background: #828282;
+  color: #f2f2f2;
+}
+
+.subhead .detail button:hover {
+  background: #929292;
 }

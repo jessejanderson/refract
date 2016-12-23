@@ -1,51 +1,49 @@
 <h1>Screenshots</h1>
-<div class="pure-g">
-  <div class="pure-u-1">
-    <p>
-      <code><%= @current_commit.branch %></code>
-      compared to
-      <form action="/diff" method="post">
-        <input type="hidden" name="head_sha" value="<%= @current_commit.sha %>" />
-        <select name="base_sha" onchange="this.parentElement.submit()">
-          <option value="">Choose a base</option>
-          <% @all_commits.sort_by { |c| - c.timestamp }.each do |commit| %>
-            <option
-              <%= (@base_commit && @base_commit.sha == commit.sha) ? "selected" : "" %>
-              value="<%= commit.sha %>"
-            >
-              <% if commit.sha == @current_commit.sha %>
-                *
-              <% end %>
-              <% if commit.branch.empty? %>
-                <%= commit.sha[0,8] %>
-              <% else %>
-                <%= commit.branch %>
-              <% end %>
-              (<%= commit.message %>, <%= commit.timeago %>)
-            </option>
-          <% end %>
-        </select>
-      </form>
-    </p>
-    <p>
-      Last Commit: <code><%= @current_commit.message %> <%= @current_commit.sha[0, 8] %></code> (<%= @current_commit.author %>)
-    </p>
-    <p>
-      Last Updated: <%= @diff.timeago %>
-      <form action="/screenshot" method="POST" style="display: inline;">
-        <button class="pure-button <%= @current_commit.exist? ? "" :  "pure-button-primary" %>">
-          <%= @current_commit.exist? ? "re-run screenshots" : "create screenshots"  %>
-        </button>
-      </form>
-    </p>
+<div class="subhead">
+  <h2>
+    <code><%= @current_commit.branch %></code>
+    compared to
+    <form action="/diff" method="post">
+      <input type="hidden" name="head_sha" value="<%= @current_commit.sha %>" />
+      <select name="base_sha" onchange="this.parentElement.submit()">
+        <option value="">Choose a base</option>
+        <% @all_commits.sort_by { |c| - c.timestamp }.each do |commit| %>
+          <option
+            <%= (@base_commit && @base_commit.sha == commit.sha) ? "selected" : "" %>
+            value="<%= commit.sha %>"
+          >
+            <% if commit.sha == @current_commit.sha %>
+              *
+            <% end %>
+            <% if commit.branch.empty? %>
+              <%= commit.sha[0,8] %>
+            <% else %>
+              <%= commit.branch %>
+            <% end %>
+            (<%= commit.message %>, <%= commit.timeago %>)
+          </option>
+        <% end %>
+      </select>
+    </form>
+  </h2>
+  <div class="detail">
+    Last Commit: <code><%= @current_commit.message %> <%= @current_commit.sha[0, 8] %></code> (<%= @current_commit.author %>)
+  </div>
+  <div class="detail">
+    Last Updated: <span class="dark"><%= @diff.timeago %></span>
+    <form action="/screenshot" method="POST" style="display: inline;">
+      <button class="button <%= @current_commit.exist? ? "" :  "pure-button-primary" %>">
+        <%= @current_commit.exist? ? "Force Update" : "Update"  %>
+      </button>
+    </form>
   </div>
 </div>
 
-<div style="display: flex; justify-content: space-between;">
+<div style="display: flex; justify-content: space-between;background:#bdbdbd;padding:0 32px;font-size:12px;align-items:center;height:50px">
   <div>
     <% @diff.dimensions.each do |dim| %>
       <% dim_s = dim.join("x") %>
-      <a class="pure-button <%= @dimension == dim_s  ? "pure-button-active" : "" %>" href="/setting/dimension/<%= dim_s %>">
+      <a class="button <%= @dimension == dim_s  ? "button-active" : "" %>" href="/setting/dimension/<%= dim_s %>">
         <%= dim_s %>
       </a>
     <% end %>
@@ -54,8 +52,8 @@
     <a href="/hide">Show all (<%= @hidden_screenshots.length %> hidden)</a>
   <% end %>
   <div>
-    <a class="pure-button <%= @size == "small" ? "pure-button-active" : "" %>" href="/setting/size/small">small</a>
-    <a class="pure-button <%= @size == "big" ? "pure-button-active" : "" %>" href="/setting/size/big">big</a>
+    <a class="button <%= @size == "small" ? "button-active" : "" %>" href="/setting/size/small">small</a>
+    <a class="button <%= @size == "big" ? "button-active" : "" %>" href="/setting/size/big">large</a>
   </div>
 </div>
 
@@ -63,13 +61,13 @@
 <% screenshots.reject! { |s| @hidden_screenshots.include?(s.name) } %>
 <% screenshots.select! { |s| @dimension.nil? || @dimension == s.dimension_s } %>
 
-<div style="display: flex;">
+<div style="display: flex;background: #f8f8f8;flex-wrap:wrap;">
   <% screenshots.each do |screenshot| %>
-    <div class="screenshot screenshot-<%= @size %>">
-      <p>
-        <%= screenshot.percentage %>%
-        <%= screenshot.name %>
-        <a href="/hide/<%= screenshot.name %>">hide diff</a>
+    <div class="screenshot screenshot-<%= @size %>" style="flex:1;">
+      <p style="background:#e0e0e0;padding:8px;display:flex;justify-content:space-between;">
+        <span style="padding: 4px;background:#eb5757;color:#f2f2f2;"><%= screenshot.percentage %>%</span>
+        <span style="position:relative;top:3px;"><%= screenshot.name %></span>
+        <a href="/hide/<%= screenshot.name %>" style="color:#828282;font-size:14px;position:relative;top:4px;">hide diff</a>
       </p>
       <div style="display:flex;">
         <img src="/img/<%= @diff.base.sha %>/<%= screenshot.base_name %>" />
