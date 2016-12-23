@@ -1,5 +1,6 @@
 module Refract
-  class Snapshot
+  # Wraps an image file and pulls out metadata from the filename
+  class Screenshot
     attr_reader :path, :name, :whole_name, :base_name, :percentage
     def initialize(path)
       @path = path
@@ -36,7 +37,7 @@ module Refract
     end
 
     def self.all(directory: )
-      Dir.glob(directory + "/*.png").map { |f| Snapshot.new(f) }
+      Dir.glob(directory + "/*.png").map { |f| Screenshot.new(f) }
     end
   end
 end

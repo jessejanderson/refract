@@ -10,7 +10,7 @@ module Refract
     def self.dispatch(command)
       case command[0]
       when RUN
-        ruby_file = command[1] || DEFAULT_SNAPSHOTS_FILE
+        ruby_file = command[1] || DEFAULT_SCREENSHOTS_FILE
         load(ruby_file)
         Refract.perform
       when SERVE

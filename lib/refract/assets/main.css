@@ -4,10 +4,14 @@ body {
   background: #eeeeee;
 }
 
-.snapshot-big img {
+.screenshot {
+  margin: 10px;
+}
+
+.screenshot-big img {
   max-height: 400px;
 }
 
-.snapshot-small img {
+.screenshot-small img {
   max-height: 200px;
 }

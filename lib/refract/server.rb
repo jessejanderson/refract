@@ -67,8 +67,8 @@ module Refract
             end
           end
           redirect(response, "/")
-        when "snapshot"
-          load(DEFAULT_SNAPSHOTS_FILE)
+        when "screenshot"
+          load(DEFAULT_SCREENSHOTS_FILE)
           Thread.new { Refract.perform }
           redirect(response, "/run")
         else
@@ -84,7 +84,7 @@ module Refract
         write_cookie(response, "base_sha", base_sha)
 
         hidden_s = read_cookie(request, "hidden") || ""
-        @hidden_snapshots = hidden_s.split("|")
+        @hidden_screenshots = hidden_s.split("|")
         @request = request
         @dimension = read_cookie(request, "dimension")
         @righthand = read_cookie(request, "righthand") || "diff"

@@ -22,6 +22,10 @@ module Refract
       load_metadata && @timeago
     end
 
+    def timestamp
+      load_metadata && @timestamp.to_i
+    end
+
     def diffs
       @diffs ||= Dir.glob(@directory + "/*/").map do |dir|
         sha = File.basename(dir)
@@ -43,12 +47,16 @@ module Refract
         .map { |d| Commit.new(File.basename(d)) }
     end
 
+    def exist?
+      Dir.glob(File.join(@directory, "*.png")).any?
+    end
+
     private
 
     def load_metadata
       @load_metadata ||= begin
-        metadata = `git show --format="%s|%an|%cr" -s #{@sha}`.strip
-        @message, @author, @timeago = metadata.split("|")
+        metadata = `git show --format="%s|%an|%ar|%at" -s #{@sha}`.strip
+        @message, @author, @timeago, @timestamp = metadata.split("|")
         true
       end
     end

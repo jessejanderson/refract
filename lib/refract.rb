@@ -6,21 +6,23 @@ require "pathname"
 require "refract/cli"
 require "refract/commit"
 require "refract/diff"
-require "refract/multi_process_logger"
+require "refract/logger/multi_process_logger"
+require "refract/logger/puts_logger"
 require "refract/run"
 require "refract/server"
-require "refract/snapshot"
+require "refract/session_proxy"
+require "refract/screenshot"
 require "refract/version"
 
 module Refract
   DEFAULT_PORT = 7777
-  DEFAULT_SNAPSHOTS_FILE = "snapshots.rb"
+  DEFAULT_SCREENSHOTS_FILE = "screenshots.rb"
 
   class << self
     attr_accessor :logger
   end
 
-  self.logger = MultiProcessLogger.new
+  self.logger = Logger::PutsLogger.new
 
   def self.run(&block)
     @run = Run.new(&block)

@@ -24,16 +24,16 @@ module Refract
       @directory = ".refract/#{@base.sha}/#{@head.sha}"
     end
 
-    def snapshots
-      Snapshot.all(directory: @directory)
+    def screenshots
+      Screenshot.all(directory: @directory)
     end
 
     def dimensions
-      Set.new(snapshots.map(&:dimensions))
+      Set.new(screenshots.map(&:dimensions))
     end
 
     def exist?
-      snapshots.any?
+      screenshots.any?
     end
 
     def create
@@ -66,8 +66,8 @@ module Refract
     end
 
     def timeago
-      if snapshots.any?
-        s = Time.now.to_i - snapshots.first.timestamp.to_i
+      if screenshots.any?
+        s = Time.now.to_i - screenshots.first.timestamp.to_i
         days, rem = s.divmod(60 * 60 * 24)
         hours, rem = rem.divmod(60 * 60)
         minutes, rem = rem.divmod(60)
@@ -86,9 +86,9 @@ module Refract
     end
 
     def percentage
-      if snapshots.any?
-        total = snapshots.map(&:percentage).inject(&:+)
-        (total / snapshots.length).round(4)
+      if screenshots.any?
+        total = screenshots.map(&:percentage).inject(&:+)
+        (total / screenshots.length).round(4)
       else
         0
       end
@@ -102,7 +102,7 @@ module Refract
       module_function
       def timeago; "--"; end
       def dimensions; []; end
-      def snapshots; []; end
+      def screenshots; []; end
     end
   end
 end

@@ -1,4 +1,4 @@
-<h1>Snapshots</h1>
+<h1>Screenshots</h1>
 <div class="pure-g">
   <div class="pure-u-1">
     <p>
@@ -8,7 +8,7 @@
         <input type="hidden" name="head_sha" value="<%= @current_commit.sha %>" />
         <select name="base_sha" onchange="this.parentElement.submit()">
           <option value="">Choose a base</option>
-          <% @all_commits.each do |commit| %>
+          <% @all_commits.sort_by { |c| - c.timestamp }.each do |commit| %>
             <option
               <%= (@base_commit && @base_commit.sha == commit.sha) ? "selected" : "" %>
               value="<%= commit.sha %>"
@@ -21,20 +21,20 @@
               <% else %>
                 <%= commit.branch %>
               <% end %>
-              (<%= commit.message %>)
+              (<%= commit.message %>, <%= commit.timeago %>)
             </option>
           <% end %>
         </select>
       </form>
     </p>
     <p>
-      Last Commit: <code><%= @current_commit.message %></code> (<%= @current_commit.author %>)
+      Last Commit: <code><%= @current_commit.message %> <%= @current_commit.sha[0, 8] %></code> (<%= @current_commit.author %>)
     </p>
     <p>
       Last Updated: <%= @diff.timeago %>
-      <form action="/snapshot" method="POST" style="display: inline;">
-        <button class="pure-button pure-button-primary">
-          update
+      <form action="/screenshot" method="POST" style="display: inline;">
+        <button class="pure-button <%= @current_commit.exist? ? "" :  "pure-button-primary" %>">
+          <%= @current_commit.exist? ? "re-run screenshots" : "create screenshots"  %>
         </button>
       </form>
     </p>
@@ -50,8 +50,8 @@
       </a>
     <% end %>
   </div>
-  <% if @hidden_snapshots.any? %>
-    <a href="/hide">Show all (<%= @hidden_snapshots.length %> hidden)</a>
+  <% if @hidden_screenshots.any? %>
+    <a href="/hide">Show all (<%= @hidden_screenshots.length %> hidden)</a>
   <% end %>
   <div>
     <a class="pure-button <%= @size == "small" ? "pure-button-active" : "" %>" href="/setting/size/small">small</a>
@@ -59,28 +59,30 @@
   </div>
 </div>
 
-<% snapshots = @diff.snapshots %>
-<% snapshots.reject! { |s| @hidden_snapshots.include?(s.name) } %>
-<% snapshots.select! { |s| @dimension.nil? || @dimension == s.dimension_s } %>
+<% screenshots = @diff.screenshots %>
+<% screenshots.reject! { |s| @hidden_screenshots.include?(s.name) } %>
+<% screenshots.select! { |s| @dimension.nil? || @dimension == s.dimension_s } %>
 
-<div>
-  <% snapshots.each do |snapshot| %>
-    <div class="snapshot-<%= @size %>">
+<div style="display: flex;">
+  <% screenshots.each do |screenshot| %>
+    <div class="screenshot screenshot-<%= @size %>">
       <p>
-        <%= snapshot.percentage %>%
-        <%= snapshot.name %>
-        <a href="/hide/<%= snapshot.name %>">hide diff</a>
+        <%= screenshot.percentage %>%
+        <%= screenshot.name %>
+        <a href="/hide/<%= screenshot.name %>">hide diff</a>
       </p>
       <div style="display:flex;">
-        <img src="/img/<%= @diff.base.sha %>/<%= snapshot.base_name %>" />
-        <% if @righthand == "diff" %>
-          <a href="/setting/righthand/new">
-            <img src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= snapshot.whole_name %>" />
-          </a>
-        <% else %>
-          <a href="/setting/righthand/diff">
-            <img src="/img/<%= @diff.head.sha %>/<%= snapshot.base_name %>" />
-          </a>
+        <img src="/img/<%= @diff.base.sha %>/<%= screenshot.base_name %>" />
+        <% if @diff.base.sha != @diff.head.sha %>
+          <% if @righthand == "diff" %>
+            <a href="/setting/righthand/new">
+              <img src="/img/<%= @diff.base.sha %>/<%= @diff.head.sha %>/<%= screenshot.whole_name %>" />
+            </a>
+          <% else %>
+            <a href="/setting/righthand/diff">
+              <img src="/img/<%= @diff.head.sha %>/<%= screenshot.base_name %>" />
+            </a>
+          <% end %>
         <% end %>
       </div>
     </div>

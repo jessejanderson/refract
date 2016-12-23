@@ -63,7 +63,9 @@ gem 'refract'
 
 ## TODO
 
-- Full height screenshot
+- How to get full-height screenshot?
+- How to not have zombie selenium processes?
+- How to have a nice headless browser on OSX (with full-height screenshots)?
 
 ## License
 
